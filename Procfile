@@ -1,1 +1,1 @@
-web: target/universal/stage/bin/what-s-up -Dhttp.port=$PORT
+web: target/universal/stage/bin/whats-up -Dhttp.port=$PORT
