@@ -1,7 +1,6 @@
 package com.github.raydive.parser
 
 import java.io
-
 import scala.util.matching.Regex
 import scala.util.parsing.combinator._
 
