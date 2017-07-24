@@ -22,7 +22,7 @@ object RubyLikeParser extends RegexParsers {
   def line: Parser[io.Serializable] =
     (condition | expression | call | statement | end | word) <~ opt(eol)
   def condition: Parser[Condition] = """^(if|unless).*""".r ^^ { Condition(_) }
-  def end = "end"
+  def end: String = "end"
 
   def statement: Parser[List[io.Serializable]] = word ~ transfer ~ (call | expression | word) ^^ {
     case wr ~ tr ~ any => List(wr, tr, any)
