@@ -2,11 +2,6 @@ package com.github.raydive.parser
 
 import scala.util.parsing.combinator._
 
-case class Function(str: String)
-case class Operator(str: String)
-case class Condition(str: String)
-case class Transfer(str: String)
-
 /*
     a = sum(1, 2)
     if a != 2
@@ -21,21 +16,28 @@ case class Transfer(str: String)
 object RubyLikeParser extends RegexParsers {
 
   def code = rep(line)
-  def line = (condition | expression | function | statement | end | word) <~ opt(eol)
+  def line =
+    (condition | expression | call | statement | end | word) <~ opt(eol)
   def condition = """^(if|unless).*""".r ^^ { Condition(_) }
   def end = "end"
 
-  def statement = word ~ transfer ~ (function | expression | word)
-  def transfer  = """[\+\-\*/]?=""".r ^^ { Transfer(_) }
-  def function  = """\w+\(.*\)""".r ^^ { Function(_) }
-  def expression = (word | function).+ ~ binary_op ~ (word | function).+
+  def statement = word ~ transfer ~ (call | expression | word) ^^ {
+    case wr ~ tr ~ any => List(wr, tr, any)
+  }
+  def transfer = """[\+\-\*/]?=""".r ^^ { Transfer(_) }
+  def call = """\w+\(.*\)""".r ^^ { Call(_) }
+  def expression = (word | call) ~ binary_op ~ (word | call) ^^ {
+    case wc1 ~ bin_op ~ wc2 => List(wc1, bin_op, wc2)
+  }
   def binary_op = """[\+\-\*/]""".r ^^ { Operator(_) }
-  def unary_op  = """[\+\-]""".r ^^ { Operator(_) }
-  def word      = """\w+""".r
+  def unary_op = """[\+\-]""".r ^^ { Operator(_) }
+  def word = """\w+""".r
   def eol = opt('\r') <~ '\n'
 
   def apply(input: String): Either[String, Any] = parseAll(code, input) match {
     case Success(codeData, _) => Right(codeData)
-    case NoSuccess(errorMessage, next) => Left(s"$errorMessage on line ${next.pos.line} on column ${next.pos.column}")
+    case NoSuccess(errorMessage, next) =>
+      Left(
+        s"$errorMessage on line ${next.pos.line} on column ${next.pos.column}")
   }
 }
