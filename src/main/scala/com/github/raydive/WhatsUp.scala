@@ -11,4 +11,7 @@ class WhatsUp extends WhatsUpStack {
     jade("/index")
   }
 
+  get("/abc") {
+
+  }
 }

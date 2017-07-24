@@ -1,6 +1,9 @@
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.webapp.WebAppContext
 
+/*
+  herokuで動かすために、必要
+ */
 object JettyLauncher {
   def main(args: Array[String]) {
     val port =
