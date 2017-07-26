@@ -1,7 +1,5 @@
 package com.github.raydive.parser
 
-import java.io
-import scala.util.matching.Regex
 import scala.util.parsing.combinator._
 
 /*
@@ -17,26 +15,33 @@ import scala.util.parsing.combinator._
  */
 object RubyLikeParser extends RegexParsers {
 
-  def code: Parser[List[io.Serializable]] = rep(line)
-  def line: Parser[io.Serializable] =
-    (condition | expression | call | statement | end | word) <~ opt(eol)
-  def condition: Parser[Condition] = """^(if|unless).*""".r ^^ { Condition(_) }
-  def end: String = "end"
+  def code: Parser[List[Line]] = rep(line)
 
-  def statement: Parser[List[io.Serializable]] = word ~ transfer ~ (call | expression | word) ^^ {
-    case wr ~ tr ~ any => List(wr, tr, any)
+  def line: Parser[Line] =
+    (statement | condition | expression | call | variable) <~ opt(eol) ^^ {
+      case line: WorkToken => Line(line)
+    }
+  def condition: Parser[Condition] = """^(if|unless).*""".r ^^ { Condition(_) }
+
+  def statement: Parser[Statement] = variable ~ transfer ~ (call | expression | variable) ^^ {
+    case wr ~ tr ~ any => Statement(wr, tr, any)
   }
   def transfer: Parser[Transfer] = """[\+\-\*/]?=""".r ^^ { Transfer(_) }
   def call: Parser[Call] = """\w+\(.*\)""".r ^^ { Call(_) }
-  def expression: Parser[List[io.Serializable]] = (word | call) ~ binary_op ~ (word | call) ^^ {
-    case wc1 ~ bin_op ~ wc2 => List(wc1, bin_op, wc2)
+
+  def expression: Parser[Expression] = (call | variable) ~ binary_op ~ (call | variable) ^^ {
+    case wc1 ~ bin_op ~ wc2 => Expression(wc1, bin_op, wc2)
   }
   def binary_op: Parser[Operator] = """[\+\-\*/]""".r ^^ { Operator(_) }
   def unary_op: Parser[Operator] = """[\+\-]""".r ^^ { Operator(_) }
-  def word: Regex = """\w+""".r
+
+  def variable: Parser[Variable] =
+    """\w+""".r ^^ {
+      Variable(_)
+    }
   def eol: Parser[Option[Char]] = opt('\r') <~ '\n'
 
-  def apply(input: String): Either[String, Any] = parseAll(code, input) match {
+  def apply(input: String): Either[String, List[Line]] = parseAll(code, input) match {
     case Success(codeData, _) => Right(codeData)
     case NoSuccess(errorMessage, next) =>
       Left(

@@ -13,9 +13,7 @@ import com.github.raydive.parser._
 object RubyLikeAbcMetric {
   def calculate(code: String) : Either[String, Int] = {
     RubyLikeParser(code) match {
-      case Right(result) =>
-        result.flat_map
-        Right(1)
+      case Right(result) => Right(1) // TODO: Implement
       case Left(error) => Left(error)
     }
   }

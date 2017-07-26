@@ -2,42 +2,64 @@ package com.github.raydive.parser
 
 import org.scalatra.test.specs2._
 
-class RubyLikeParserSpec extends ScalatraSpec { def is =
-  s"""
+class RubyLikeParserSpec extends ScalatraSpec {
+  def is =
+    s2"""
     Ruby like code parser specification
-    wordはパースできること $word
-  """.stripMargin
+      変数のみはパースできること $variable
+      変数への代入はパースできること $transfer
+      変数への代入（式をふくむ）はパースできること $transfer2
+      変数への代入（関数をふくむ）はパースできること1 $transfer3
+      変数への代入（関数をふくむ）はパースできること2 $transfer4
+  """
 
-  def word = {
-    val test1 = RubyLikeParser("word")
-    println(test1)
-    val test2 = RubyLikeParser("word = 1")
-    println(test2)
-    val test3 = RubyLikeParser("word = 1 + test")
-    println(test3)
-    val test4 = RubyLikeParser("test()")
-    println(test4)
-    val test5 = RubyLikeParser("test(a, b)")
-    println(test5)
-    val value1 =
-      """
-         word = 1
-         word += 1
-         test(word, 2)
-         word = 1 + test
-      """.stripMargin
-    val test6 = RubyLikeParser(value1)
-    println(test6)
+  def variable = {
+    RubyLikeParser("word") match {
+      case Right(word) => word === List(Line(Variable("word")))
+    }
+  }
 
-    val value2 =
-      """
-        word = 1
-        if word == 1
-          test(word)
-        end
-        word = test + 1
-      """.stripMargin
-    val test7 = RubyLikeParser(value2)
-    println(test7)
+  def transfer = {
+    RubyLikeParser("word = 1") match {
+      case Right(t) =>
+        t === List(
+          Line(Statement(Variable("word"), Transfer("="), Variable("1"))))
+    }
+  }
+
+  def transfer2 = {
+    RubyLikeParser("word = 1 + test") match {
+      case Right(t) =>
+        t === List(
+          Line(
+            Statement(
+              Variable("word"),
+              Transfer("="),
+              Expression(Variable("1"), Operator("+"), Variable("test")))))
+    }
+  }
+
+  def transfer3 = {
+    RubyLikeParser("word = test + func(1)") match {
+      case Right(t) =>
+        t === List(
+          Line(
+            Statement(
+              Variable("word"),
+              Transfer("="),
+              Expression(Variable("test"), Operator("+"), Call("func(1)")))))
+    }
+  }
+
+  def transfer4 = {
+    RubyLikeParser("word = func(1)+ test") match {
+      case Right(t) =>
+        t === List(
+          Line(
+            Statement(
+              Variable("word"),
+              Transfer("="),
+              Expression(Variable("test"), Operator("+"), Call("func(1)")))))
+    }
   }
 }
