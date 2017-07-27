@@ -52,14 +52,14 @@ class RubyLikeParserSpec extends ScalatraSpec {
   }
 
   def transfer4 = {
-    RubyLikeParser("word = func(1)+ test") match {
+    RubyLikeParser("word = func(1) + test") match {
       case Right(t) =>
         t === List(
           Line(
             Statement(
               Variable("word"),
               Transfer("="),
-              Expression(Variable("test"), Operator("+"), Call("func(1)")))))
+              Expression(Call("func(1)"), Operator("+"), Variable("test")))))
     }
   }
 }

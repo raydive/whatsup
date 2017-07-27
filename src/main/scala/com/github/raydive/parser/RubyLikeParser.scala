@@ -23,17 +23,23 @@ object RubyLikeParser extends RegexParsers {
     }
   def condition: Parser[Condition] = """^(if|unless).*""".r ^^ { Condition(_) }
 
-  def statement: Parser[Statement] = variable ~ transfer ~ (call | expression | variable) ^^ {
-    case wr ~ tr ~ any => Statement(wr, tr, any)
+  def statement: Parser[Statement] = variable ~ transfer ~ (expression | call | variable) ^^ {
+    case wr ~ tr ~ any =>
+      Statement(wr, tr, any)
   }
   def transfer: Parser[Transfer] = """[\+\-\*/]?=""".r ^^ { Transfer(_) }
   def call: Parser[Call] = """\w+\(.*\)""".r ^^ { Call(_) }
 
   def expression: Parser[Expression] = (call | variable) ~ binary_op ~ (call | variable) ^^ {
-    case wc1 ~ bin_op ~ wc2 => Expression(wc1, bin_op, wc2)
+    case wc1 ~ bin_op ~ wc2 =>
+      Expression(wc1, bin_op, wc2)
   }
   def binary_op: Parser[Operator] = """[\+\-\*/]""".r ^^ { Operator(_) }
-  def unary_op: Parser[Operator] = """[\+\-]""".r ^^ { Operator(_) }
+
+  def unary_op: Parser[Operator] =
+    """\+|\-""".r ^^ {
+      Operator(_)
+    }
 
   def variable: Parser[Variable] =
     """\w+""".r ^^ {
