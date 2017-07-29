@@ -1,7 +1,6 @@
-import org.scalatra.sbt._
-import org.scalatra.sbt.PluginKeys._
-import ScalateKeys._
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
+import org.fusesource.scalate.ScalatePlugin.ScalateKeys._
+import org.scalatra.sbt._
 
 val ScalatraVersion = "2.5.1"
 
@@ -15,7 +14,7 @@ name := "what's up!?"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.3"
 
 resolvers += Classpaths.typesafeReleases
 
