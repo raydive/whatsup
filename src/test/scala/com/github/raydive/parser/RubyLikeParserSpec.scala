@@ -11,6 +11,8 @@ class RubyLikeParserSpec extends ScalatraSpec {
       変数への代入（式をふくむ）はパースできること $transfer2
       変数への代入（関数をふくむ）はパースできること1 $transfer3
       変数への代入（関数をふくむ）はパースできること2 $transfer4
+      分岐を含むコードがパースできること $ifthen
+      分岐を含むコードがパースできること2 $ifthen2
   """
 
   def variable = {
@@ -60,6 +62,48 @@ class RubyLikeParserSpec extends ScalatraSpec {
               Variable("word"),
               Transfer("="),
               Expression(Call("func(1)"), Operator("+"), Variable("test")))))
+    }
+  }
+
+  def ifthen = {
+    val code =
+      """
+        word = 1
+        if word == 1
+          word += 2
+        end
+      """
+
+    RubyLikeParser(code) match {
+      case Right(t) =>
+        t === List(
+          Line(Statement(Variable("word"), Transfer("="), Variable("1"))),
+          Line(Condition("if word == 1")),
+          Line(Statement(Variable("word"), Transfer("+="), Variable("2"))),
+          Line(Variable("end"))
+        )
+    }
+  }
+
+  def ifthen2 = {
+    val code =
+      """
+        word = 1
+        if word == 1
+          word += 2
+        end
+        word = test + 1
+      """
+
+    RubyLikeParser(code) match {
+      case Right(t) =>
+        t === List(
+          Line(Statement(Variable("word"), Transfer("="), Variable("1"))),
+          Line(Condition("if word == 1")),
+          Line(Statement(Variable("word"), Transfer("+="), Variable("2"))),
+          Line(Variable("end")),
+          Line(Statement(Variable("word"), Transfer("="), Expression(Variable("test"), Operator("+"), Variable("1"))))
+        )
     }
   }
 }

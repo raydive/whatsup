@@ -2,15 +2,17 @@ package com.github.raydive.metrics
 
 import org.scalatra.test.specs2._
 
+import scala.math.sqrt
+
 class RubyLikeAbcMetricSpec extends ScalatraSpec {
   def is =
     s2"""
-    RubyLikeAbcMetric specification
+      RubyLikeAbcMetric specification
 
-  """.stripMargin
+      code1のABC metricが正しい $code1
+    """
 
   def code1 = {
-    // TODO: Make Test
     val value =
       """
         word = 1
@@ -19,5 +21,9 @@ class RubyLikeAbcMetricSpec extends ScalatraSpec {
         end
         word = test + 1
       """
+
+    RubyLikeAbcMetric.calculate(value) match {
+      case Right(abc) => abc must_== sqrt(6.0).toInt
+    }
   }
 }
