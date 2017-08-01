@@ -10,6 +10,7 @@ class RubyLikeAbcMetricSpec extends ScalatraSpec {
       RubyLikeAbcMetric specification
 
       code1のABC metricが正しい $code1
+      code2のABC metricが正しい $code2
     """
 
   def code1 = {
@@ -24,6 +25,24 @@ class RubyLikeAbcMetricSpec extends ScalatraSpec {
 
     RubyLikeAbcMetric.calculate(value) match {
       case Right(abc) => abc must_== sqrt(6.0).toInt
+    }
+  }
+
+  def code2 = {
+    val value =
+      """
+        word = 1
+        test = 2 + word
+        if word == 1
+          unless test != 2
+            word += test
+          end
+        end
+        print(test)
+      """
+
+    RubyLikeAbcMetric.calculate(value) match {
+      case Right(abc) => abc must_== sqrt(3 * 3 + 2 * 2 + 1 * 1).toInt
     }
   }
 }
