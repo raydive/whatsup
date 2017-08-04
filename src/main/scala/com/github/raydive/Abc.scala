@@ -7,7 +7,9 @@ import org.scalatra.json._
 
 case class Topic(id: Long,
                  name: String,
+                 description: String,
                  suggestion: String,
+                 isDirectMessage: Boolean,
                  lastPostedAt: Option[java.util.Date],
                  createdAt: Option[java.util.Date],
                  updatedAt: Option[java.util.Date])
@@ -17,9 +19,10 @@ case class Post(id: Long,
                 replyTo: Option[Long],
                 message: String,
                 account: Account,
-                mention: JObject,
-                attachemnts: List[JObject],
+                mention: Option[JObject],
+                attachments: List[JObject],
                 likes: List[JObject],
+                talks: List[JObject],
                 links: List[JObject],
                 createdAt: Option[java.util.Date],
                 updatedAt: Option[java.util.Date])
@@ -29,6 +32,7 @@ case class Account(id: Long,
                    fullName: String,
                    suggestion: String,
                    imageUrl: String,
+                   isBot: Boolean,
                    createdAt: Option[java.util.Date],
                    updatedAt: Option[java.util.Date])
 
