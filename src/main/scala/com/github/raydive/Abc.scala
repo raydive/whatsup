@@ -36,7 +36,11 @@ case class Account(id: Long,
                    createdAt: Option[java.util.Date],
                    updatedAt: Option[java.util.Date])
 
-case class JsonRequest(topic: Topic, post: Post)
+case class JsonRequest(topic: Topic,
+                       post: Post,
+                       mentions: List[JObject],
+                       exceedsAttachmentLimit: Boolean,
+                       directMessage: Option[JObject])
 
 case class AbcResponse(message: String, replyTo: Long)
 
