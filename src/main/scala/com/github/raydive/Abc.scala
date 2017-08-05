@@ -7,8 +7,6 @@ import org.scalatra.json._
 
 case class Topic(id: Long,
                  name: String,
-                 description: String,
-                 suggestion: String,
                  isDirectMessage: Boolean,
                  lastPostedAt: Option[java.util.Date],
                  createdAt: Option[java.util.Date],
