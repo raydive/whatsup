@@ -52,10 +52,14 @@ class Abc extends WhatsUpStack with JacksonJsonSupport {
   post("/") {
     parsedBody match {
       case JNothing => halt(400, "Invalid Json")
-      case json: JObject => {
+      case _: JObject => {
         val req = parsedBody.extract[JsonRequest]
-        print(req.post.message)
-        RubyLikeAbcMetric.calculate(req.post.message) match {
+        val message = req.post.message
+        println(message)
+
+        val code = message.drop(message.indexOf(" "))
+        println(code)
+        RubyLikeAbcMetric.calculate(code) match {
           case Right(result) =>
             AbcResponse(s"Abc metric: $result", req.post.account.id)
           case Left(result) => AbcResponse(result, req.post.account.id)
