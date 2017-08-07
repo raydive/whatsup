@@ -2,7 +2,7 @@ package com.github.raydive.metrics
 
 import com.github.raydive.parser._
 
-import scala.math.sqrt
+import scala.math._
 
 /**
   * abc metric
@@ -13,7 +13,7 @@ import scala.math.sqrt
   * Condition
   */
 object RubyLikeAbcMetric {
-  def calculate(code: String) : Either[String, Int] = {
+  def calculate(code: String): Either[String, Double] = {
     RubyLikeParser(code) match {
       case Right(result) =>
         var a = 0
@@ -49,7 +49,7 @@ object RubyLikeAbcMetric {
           }
         }
 
-        Right(sqrt(a * a + b * b + c * c).toInt)
+        Right(sqrt(a * a + b * b + c * c))
       case Left(error) => Left(error)
     }
   }

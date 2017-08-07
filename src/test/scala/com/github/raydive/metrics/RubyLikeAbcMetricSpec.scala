@@ -2,7 +2,7 @@ package com.github.raydive.metrics
 
 import org.scalatra.test.specs2._
 
-import scala.math.sqrt
+import scala.math._
 
 class RubyLikeAbcMetricSpec extends ScalatraSpec {
   def is =
@@ -24,7 +24,7 @@ class RubyLikeAbcMetricSpec extends ScalatraSpec {
       """
 
     RubyLikeAbcMetric.calculate(value) match {
-      case Right(abc) => abc must_== sqrt(6.0).toInt
+      case Right(abc) => abc must_== sqrt(6.0)
     }
   }
 
@@ -40,9 +40,8 @@ class RubyLikeAbcMetricSpec extends ScalatraSpec {
         end
         print(test)
       """
-
     RubyLikeAbcMetric.calculate(value) match {
-      case Right(abc) => abc must_== sqrt(3 * 3 + 2 * 2 + 1 * 1).toInt
+      case Right(abc) => abc must_== sqrt(3 * 3 + 2 * 2 + 1 * 1)
     }
   }
 }
