@@ -26,8 +26,8 @@ class Abc extends WhatsUpStack with JacksonJsonSupport {
         println(code)
         RubyLikeAbcMetric.calculate(code) match {
           case Right(result) =>
-            TypetalkResponse(s"Abc metric: $result", req.post.account.id)
-          case Left(result) => TypetalkResponse(result, req.post.account.id)
+            TypetalkResponse(s"@${req.post.account.name} Abc metric: $result", req.post.id)
+          case Left(result) => TypetalkResponse(result, req.post.id)
         }
       }
       case _ => halt(400, "Unknown Json")
