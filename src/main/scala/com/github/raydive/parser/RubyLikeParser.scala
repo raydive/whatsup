@@ -19,7 +19,7 @@ object RubyLikeParser extends RegexParsers {
 
   def line: Parser[Line] =
     (statement | condition | expression | call | variable) <~ opt(eol) ^^ {
-      case line: WorkToken => Line(line)
+      case line: WorkToken => Line(Seq(line))
     }
   def condition: Parser[Condition] = """^(if|unless).*""".r ^^ { Condition(_) }
 

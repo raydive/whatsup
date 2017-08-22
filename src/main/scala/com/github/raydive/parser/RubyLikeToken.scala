@@ -2,7 +2,7 @@ package com.github.raydive.parser
 
 sealed trait WorkToken extends Product with Serializable
 
-case class Line(token: WorkToken)
+case class Line(tokens: Seq[WorkToken])
 
 case class Statement(word: WorkToken, tr: Transfer, tk: WorkToken) extends WorkToken
 

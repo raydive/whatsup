@@ -13,11 +13,12 @@ class RubyLikeParserSpec extends ScalatraSpec {
       変数への代入（関数をふくむ）はパースできること2 $transfer4
       分岐を含むコードがパースできること $ifthen
       分岐を含むコードがパースできること2 $ifthen2
+      分岐を含むコードがパースできること3 $reverseIf
   """
 
   def variable = {
     RubyLikeParser("word") match {
-      case Right(word) => word === List(Line(Variable("word")))
+      case Right(word) => word === List(Line(Seq(Variable("word"))))
     }
   }
 
@@ -25,7 +26,7 @@ class RubyLikeParserSpec extends ScalatraSpec {
     RubyLikeParser("word = 1") match {
       case Right(t) =>
         t === List(
-          Line(Statement(Variable("word"), Transfer("="), Variable("1"))))
+          Line(Seq(Statement(Variable("word"), Transfer("="), Variable("1")))))
     }
   }
 
@@ -34,10 +35,11 @@ class RubyLikeParserSpec extends ScalatraSpec {
       case Right(t) =>
         t === List(
           Line(
+            Seq(
             Statement(
               Variable("word"),
               Transfer("="),
-              Expression(Variable("1"), Operator("+"), Variable("test")))))
+              Expression(Variable("1"), Operator("+"), Variable("test"))))))
     }
   }
 
@@ -46,10 +48,11 @@ class RubyLikeParserSpec extends ScalatraSpec {
       case Right(t) =>
         t === List(
           Line(
+            Seq(
             Statement(
               Variable("word"),
               Transfer("="),
-              Expression(Variable("test"), Operator("+"), Call("func(1)")))))
+              Expression(Variable("test"), Operator("+"), Call("func(1)"))))))
     }
   }
 
@@ -58,10 +61,11 @@ class RubyLikeParserSpec extends ScalatraSpec {
       case Right(t) =>
         t === List(
           Line(
+            Seq(
             Statement(
               Variable("word"),
               Transfer("="),
-              Expression(Call("func(1)"), Operator("+"), Variable("test")))))
+              Expression(Call("func(1)"), Operator("+"), Variable("test"))))))
     }
   }
 
@@ -77,10 +81,10 @@ class RubyLikeParserSpec extends ScalatraSpec {
     RubyLikeParser(code) match {
       case Right(t) =>
         t === List(
-          Line(Statement(Variable("word"), Transfer("="), Variable("1"))),
-          Line(Condition("if word == 1")),
-          Line(Statement(Variable("word"), Transfer("+="), Variable("2"))),
-          Line(Variable("end"))
+          Line(Seq(Statement(Variable("word"), Transfer("="), Variable("1")))),
+          Line(Seq(Condition("if word == 1"))),
+          Line(Seq(Statement(Variable("word"), Transfer("+="), Variable("2")))),
+          Line(Seq(Variable("end")))
         )
     }
   }
@@ -98,12 +102,27 @@ class RubyLikeParserSpec extends ScalatraSpec {
     RubyLikeParser(code) match {
       case Right(t) =>
         t === List(
-          Line(Statement(Variable("word"), Transfer("="), Variable("1"))),
-          Line(Condition("if word == 1")),
-          Line(Statement(Variable("word"), Transfer("+="), Variable("2"))),
-          Line(Variable("end")),
-          Line(Statement(Variable("word"), Transfer("="), Expression(Variable("test"), Operator("+"), Variable("1"))))
+          Line(Seq(Statement(Variable("word"), Transfer("="), Variable("1")))),
+          Line(Seq(Condition("if word == 1"))),
+          Line(Seq(Statement(Variable("word"), Transfer("+="), Variable("2")))),
+          Line(Seq(Variable("end"))),
+          Line(Seq(Statement(Variable("word"), Transfer("="), Expression(Variable("test"), Operator("+"), Variable("1")))))
         )
     }
   }
+
+// 解決できるまでいったんコメントオフ
+// def reverseIf = {
+//    val code =
+//      """
+//        word = 1 if a == 2
+//      """
+//
+//    RubyLikeParser(code) match {
+//      case Right(t) =>
+//        t === List(
+//          Line(Seq(Statement(Variable("word"), Transfer("="), Variable("1")), Condition("if a == 2")))
+//        )
+//    }
+//  }
 }
