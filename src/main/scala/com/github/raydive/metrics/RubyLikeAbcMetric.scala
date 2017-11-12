@@ -23,29 +23,33 @@ object RubyLikeAbcMetric {
         for (
           line <- result
         ) {
-          line match {
-            case Line(_: Condition) => c += 1
-            case Line(_: Call) => b += 1
-            case Line(token: Expression) =>
-              token match {
-                case Expression(_: Call, _, _: Call) => b += 2
-                case Expression(_: Call, _, _: Variable) => b += 1
-                case Expression(_: Variable, _, _: Call) => b += 1
-                case _ => 0
-              }
-            case Line(token: Statement) =>
-              a += 1
-              token match {
-                case Statement(_, _, ecv) =>
-                  ecv match {
-                    case Call(_) => b += 1
-                    case Expression(_: Call, _, _: Call) => b += 2
-                    case Expression(_: Call, _, _: Variable) => b += 1
-                    case Expression(_: Variable, _, _: Call) => b += 1
-                    case _ => 0
-                  }
-              }
-            case _ => 0
+          for (
+            token <- line.tokens
+          ) {
+            token match {
+              case _: Condition => c += 1
+              case _: Call => b += 1
+              case token: Expression =>
+                token match {
+                  case Expression(_: Call, _, _: Call) => b += 2
+                  case Expression(_: Call, _, _: Variable) => b += 1
+                  case Expression(_: Variable, _, _: Call) => b += 1
+                  case _ => 0
+                }
+              case token: Statement =>
+                a += 1
+                token match {
+                  case Statement(_, _, ecv) =>
+                    ecv match {
+                      case Call(_) => b += 1
+                      case Expression(_: Call, _, _: Call) => b += 2
+                      case Expression(_: Call, _, _: Variable) => b += 1
+                      case Expression(_: Variable, _, _: Call) => b += 1
+                      case _ => 0
+                    }
+                }
+              case _ => 0
+            }
           }
         }
 
