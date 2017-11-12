@@ -2,7 +2,7 @@ import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
 import org.fusesource.scalate.ScalatePlugin.ScalateKeys._
 import org.scalatra.sbt._
 
-val ScalatraVersion = "2.5.1"
+val ScalatraVersion = "2.6.+"
 
 ScalatraPlugin.scalatraSettings
 
