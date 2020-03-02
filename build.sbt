@@ -1,12 +1,10 @@
 import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
+import org.fusesource.scalate.ScalatePlugin._
 import org.fusesource.scalate.ScalatePlugin.ScalateKeys._
-import org.scalatra.sbt._
-
-val ScalatraVersion = "2.6.+"
-
-ScalatraPlugin.scalatraSettings
 
 scalateSettings
+
+val ScalatraVersion = "2.7.+"
 
 organization := "com.github.raydive"
 
@@ -14,19 +12,19 @@ name := "what's up!?"
 
 version := "0.1.0-SNAPSHOT"
 
-scalaVersion := "2.12.3"
+scalaVersion := "2.13.1"
 
 resolvers += Classpaths.typesafeReleases
 
 libraryDependencies ++= Seq(
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
   "org.scalatra" %% "scalatra" % ScalatraVersion,
   "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
   "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
   "org.scalatra" %% "scalatra-json" % ScalatraVersion,
-  "org.json4s" %% "json4s-jackson" % "3.5.3",
+  "org.json4s" %% "json4s-jackson" % "3.6.7",
   "ch.qos.logback" % "logback-classic" % "1.1.5" % "runtime",
-  "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "compile;container",
+  "org.eclipse.jetty" % "jetty-webapp" % "9.4.27.v20200227" % "compile;container",
   "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided"
 )
 

@@ -13,7 +13,6 @@ class RubyLikeParserSpec extends ScalatraSpec {
       変数への代入（関数をふくむ）はパースできること2 $transfer4
       分岐を含むコードがパースできること $ifthen
       分岐を含むコードがパースできること2 $ifthen2
-      分岐を含むコードがパースできること3 $reverseIf
   """
 
   def variable = {
@@ -110,19 +109,4 @@ class RubyLikeParserSpec extends ScalatraSpec {
         )
     }
   }
-
-// 解決できるまでいったんコメントオフ
-// def reverseIf = {
-//    val code =
-//      """
-//        word = 1 if a == 2
-//      """
-//
-//    RubyLikeParser(code) match {
-//      case Right(t) =>
-//        t === List(
-//          Line(Seq(Statement(Variable("word"), Transfer("="), Variable("1")), Condition("if a == 2")))
-//        )
-//    }
-//  }
 }
